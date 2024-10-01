@@ -26,7 +26,7 @@ const DesignPreview = ({}) => {
     model: Model;
     material: Material;
     finish: Finish;
-  } = JSON.parse(localStorage.getItem("configuration") ? localStorage.getItem("configuration") as string : "");
+  } = JSON.parse(typeof window !== 'undefined' ? localStorage.getItem("configuration") as string : "");
 
   const handleCheckout = async () => {
     // console.log({
@@ -44,10 +44,10 @@ const DesignPreview = ({}) => {
       finish: configuration.finish.slug,
       material: configuration.material.slug,
       model: configuration.model.slug,
-      width: localStorage.getItem("width") ? Number(localStorage.getItem("width")) : 1,
-      height: localStorage.getItem("height") ? Number(localStorage.getItem("height")) : 1,
-      image: localStorage.getItem("image") ? localStorage.getItem("image") as string : "",
-      croppedImage: localStorage.getItem("croppedImage") ? localStorage.getItem("croppedImage") as string : "",
+      width: typeof window !== 'undefined' ? Number(localStorage.getItem("width")) : 1,
+      height: typeof window !== 'undefined' ? Number(localStorage.getItem("height")) : 1,
+      image: typeof window !== 'undefined' ? localStorage.getItem("image") as string : "",
+      croppedImage: typeof window !== 'undefined' ? localStorage.getItem("croppedImage") as string : "",
     });
 
     router.push(`/checkout?configuration_id=${res?.configuration_id}`);
@@ -74,7 +74,7 @@ const DesignPreview = ({}) => {
           <Phone
             style={{ backgroundColor: configuration.color.hex_code }}
             className={"max-w-[150px] md:max-w-full"}
-            imgSrc={localStorage.getItem("croppedImage") ? localStorage.getItem("croppedImage") as string : ""}
+            imgSrc={typeof window !== 'undefined' ? localStorage.getItem("croppedImage") as string : ""}
           />
         </div>
 
