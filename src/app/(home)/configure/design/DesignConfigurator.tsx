@@ -144,8 +144,8 @@ const DesignConfigurator = () => {
           default={{
             x: 150,
             y: 205,
-            height: Number(localStorage.getItem("height")) / 4,
-            width: Number(localStorage.getItem("width")) / 4,
+            height: localStorage.getItem("height") ? Number(localStorage.getItem("height")) / 4 : 1,
+            width: localStorage.getItem("width") ? Number(localStorage.getItem("width")) / 4 : 1,
           }}
           onResizeStop={(_, __, ref, ___, { x, y }) => {
             setRenderedDimension({
@@ -170,7 +170,7 @@ const DesignConfigurator = () => {
         >
           <div className="relative w-full h-full">
             <NextImage
-              src={localStorage.getItem("image") as string}
+              src={localStorage.getItem("image") ? localStorage.getItem("image") as string : ""}
               fill
               alt="your image"
               className="pointer-events-none"
