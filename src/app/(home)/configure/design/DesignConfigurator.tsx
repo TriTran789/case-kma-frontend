@@ -28,8 +28,8 @@ const DesignConfigurator = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [renderedDimension, setRenderedDimension] = useState({
-    height: Number(localStorage.getItem("height")) / 4,
-    width: Number(localStorage.getItem("width")) / 4,
+    height: localStorage.getItem("height") ? Number(localStorage.getItem("height")) / 4 : 1,
+    width: localStorage.getItem("width") ? Number(localStorage.getItem("width")) / 4 : 1,
   });
 
   const [renderedPosition, setRenderedPosition] = useState({
@@ -91,7 +91,7 @@ const DesignConfigurator = () => {
 
     const userImage = new Image();
     userImage.crossOrigin = "anonymous";
-    userImage.src = localStorage.getItem("image") as string;
+    userImage.src = localStorage.getItem("image") ? (localStorage.getItem("image") as string) : "";
     await new Promise((resolve) => (userImage.onload = resolve));
 
     ctx?.drawImage(
