@@ -26,7 +26,7 @@ const DesignPreview = ({}) => {
     model: Model;
     material: Material;
     finish: Finish;
-  } = JSON.parse(typeof window !== 'undefined' ? localStorage.getItem("configuration") as string : "");
+  } = JSON.parse(typeof window !== 'undefined' ? localStorage.getItem("configuration") as string : "{}");
 
   const handleCheckout = async () => {
     // console.log({
