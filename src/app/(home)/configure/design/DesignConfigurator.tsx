@@ -105,7 +105,7 @@ const DesignConfigurator = () => {
     const base64 = canvas.toDataURL();
 
     typeof window !== 'undefined' && localStorage.setItem("croppedImage", base64);
-    typeof window !== 'undefined' && localStorage.setItem("configuration", configuration.toString());
+    typeof window !== 'undefined' && localStorage.setItem("configuration", JSON.stringify(configuration));
 
     router.push(`/configure/preview`);
   }
