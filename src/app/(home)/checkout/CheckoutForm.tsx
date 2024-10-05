@@ -24,6 +24,8 @@ import { cn, formatPrice } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
+const payments = ["paypal", "card", "vnpay", "bank"];
+
 const CheckoutForm = ({ configId }: { configId: string }) => {
   const { isLoadingCountry, countries } = useGetCountry();
   const { isLoadingProvince, provinces } = useGetProvince();
@@ -46,6 +48,8 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
         ...prev,
         country: countries[0],
         province: provinces[0],
+        method: payments[0],
+        quantity: 1,
       }));
       const res = await getDistrict((provinces as Province[])[0].code);
       setDistricts(res);
@@ -55,6 +59,10 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
       }));
       setCurrentCountry(countries[0]);
     }
+    setDataRegion({
+      method: payments[0],
+      quantity: 1,
+    });
   };
 
   useEffect(() => {
@@ -90,7 +98,6 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
         dataVn?.province?.code &&
         dataVn?.district?.code
       ) {
-        console.log(dataVn?.district?.code, previousDistrcict?.code);
         if (dataVn?.district?.code !== previousDistrcict?.code) {
           const res = await getShip({
             CountryCode: dataVn?.country?.code,
@@ -354,11 +361,58 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
               quantity: e.target.value,
             }));
           }}
-          defaultValue={1}
+          defaultValue={dataRegion.quantity}
         />
         {Number(dataVn?.quantity) < 1 && (
           <p className="text-red-600 text-sm">Quantity must at least 1</p>
         )}
+      </div>
+
+      <div className="relative flex flex-col gap-3 w-full">
+        <Label>Payments</Label>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              className="w-full justify-between capitalize"
+            >
+              {dataVn?.method}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <div className="max-h-40 overflow-y-auto">
+              {payments?.map((method) => (
+                <DropdownMenuItem
+                  key={method}
+                  className={cn(
+                    "flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100 capitalize",
+                    {
+                      "bg-zinc-100": method === dataVn?.method,
+                    }
+                  )}
+                  onClick={() => {
+                    setDataVn((prev: any) => {
+                      return {
+                        ...prev,
+                        method,
+                      };
+                    });
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      method === dataVn?.method ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {method}
+                </DropdownMenuItem>
+              ))}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="flex justify-between text-sm">
@@ -388,9 +442,10 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
             ? formatPrice(0)
             : formatPrice(
                 ship?.amount +
-                  myConfig?.amount +
-                  myConfig?.amount_material +
-                  myConfig?.amount_finish
+                  (myConfig?.amount +
+                    myConfig?.amount_material +
+                    myConfig?.amount_finish) *
+                    Number(dataVn?.quantity ?? 1)
               )}
         </p>
       </div>
