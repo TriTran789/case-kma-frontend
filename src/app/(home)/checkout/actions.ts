@@ -197,3 +197,76 @@ export const useGetShip = () => {
 
   return { getShip, isLoading };
 };
+
+export const useCreateShippingAddress = () => {
+  const createShippingAddressRequest = async (data: any) => {
+    const accessToken = getCookie("access_token");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to checkout");
+    }
+
+    return response.json();
+  };
+
+  const {
+    isLoading,
+    error,
+    isSuccess,
+    mutateAsync: createShippingAddress,
+  } = useMutation(createShippingAddressRequest);
+
+  if (error) {
+    toast.error(error.toString());
+  }
+
+  if (isSuccess) {
+    toast.success("Checkout Successfully");
+  }
+
+  return { isLoading, createShippingAddress };
+};
+
+export const useGetOldAddress = () => {
+  const getOldAddressRequest = async () => {
+    const accessToken = getCookie("access_token");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to get old address");
+    }
+
+    return response.json();
+  };
+
+  const {
+    data: oldAddress,
+    isLoading,
+    error,
+  } = useQuery("getOldAddress", getOldAddressRequest);
+
+  if (error) {
+    toast.error(error.toString());
+  }
+
+  return { isLoading, oldAddress };
+};

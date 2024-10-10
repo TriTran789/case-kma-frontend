@@ -57,7 +57,17 @@ const Navbar = () => {
                   >
                     Dashboard ✨
                   </Link>
-                ) : null}
+                ) : (
+                  <Link
+                    href="/orders"
+                    className={buttonVariants({
+                      size: "sm",
+                      variant: "ghost",
+                    })}
+                  >
+                    Orders
+                  </Link>
+                )}
                 <Link
                   href="/configure/upload"
                   className={buttonVariants({

@@ -8,14 +8,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import {
   Country,
   District,
   Province,
+  useCreateShippingAddress,
   useGetCountry,
   useGetDisTrict,
   useGetMyConfig,
+  useGetOldAddress,
   useGetProvince,
   useGetShip,
 } from "./actions";
@@ -23,15 +25,20 @@ import { useEffect, useState } from "react";
 import { cn, formatPrice } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const payments = ["paypal", "card", "vnpay", "bank"];
 
 const CheckoutForm = ({ configId }: { configId: string }) => {
+  const router = useRouter();
   const { isLoadingCountry, countries } = useGetCountry();
   const { isLoadingProvince, provinces } = useGetProvince();
   const { getDistrict, isLoadingDistrict } = useGetDisTrict();
   const { getMyConfig, isLoading: isLoadingMyConfig } = useGetMyConfig();
   const { getShip, isLoading: isLoadingShip } = useGetShip();
+  const { isLoading: isLoadingCreateAddress, createShippingAddress } =
+    useCreateShippingAddress();
+  const { oldAddress, isLoading: isLoadingOldAddress } = useGetOldAddress();
 
   const [districts, setDistricts] = useState<District[]>();
 
@@ -41,6 +48,7 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
   const [myConfig, setMyConfig] = useState<any>();
   const [ship, setShip] = useState<any>();
   const [previousDistrcict, setPreviousDistrcict] = useState<District>();
+  const [currentOldAddress, setCurrentOldAddress] = useState<any>(null);
 
   const setDefaultDataVn = async () => {
     if (countries && provinces) {
@@ -53,10 +61,11 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
       }));
       const res = await getDistrict((provinces as Province[])[0].code);
       setDistricts(res);
-      setDataVn((prev: any) => ({
-        ...prev,
-        district: res[0],
-      }));
+      if (!currentOldAddress)
+        setDataVn((prev: any) => ({
+          ...prev,
+          district: res[0],
+        }));
       setCurrentCountry(countries[0]);
     }
     setDataRegion({
@@ -72,6 +81,7 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
   const fetchNewDistricts = async () => {
     const res = await getDistrict(dataVn?.province?.code);
     setDistricts(res);
+    if (currentOldAddress) return;
     setDataVn((prev: any) => ({
       ...prev,
       district: res[0],
@@ -119,17 +129,169 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
     fetchShip();
   }, [currentCountry?.code, dataVn?.province?.code, dataVn?.district?.code]);
 
-  if (isLoadingCountry || isLoadingProvince) {
+  const handleCheckout = async (data: any) => {
+    console.log(data);
+    const { quantity, method, shipping_address_id, ...address } = data;
+    let infor: any;
+    if (shipping_address_id) {
+      infor = { quantity, method, shipping_address_id };
+    } else {
+      if (data.country.code === "VN") {
+        const { country, province, district, ...temp } = data;
+        infor = {
+          quantity,
+          method,
+          address: {
+            ...address,
+            country: country.code,
+            province: province.code,
+            district: district.code,
+          },
+        };
+      } else {
+        infor = { quantity, method, address };
+      }
+    }
+
+    const res = await createShippingAddress({
+      ...infor,
+      configuration_id: myConfig.configuration_id,
+    });
+
+    location.href = res.url;
+  };
+
+  if (isLoadingCountry || isLoadingProvince || isLoadingOldAddress) {
     return <span>Loading...</span>;
   }
 
   return (
     <div className="flex justify-center flex-col space-y-4">
+      {oldAddress && (
+        <div className="relative flex flex-col gap-3 w-full">
+          <Label>Old address</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                className="w-full justify-between"
+              >
+                {currentOldAddress ? (
+                  <p>
+                    {currentOldAddress.name}, {currentOldAddress.address}
+                  </p>
+                ) : (
+                  <p>New Address</p>
+                )}
+
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <div className="max-h-40 overflow-y-auto">
+                <DropdownMenuItem
+                  className={cn(
+                    "flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100",
+                    {
+                      "bg-zinc-100": currentOldAddress === null,
+                    }
+                  )}
+                  onClick={() => {
+                    setCurrentOldAddress(null);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      currentOldAddress === null ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  <>New Address</>
+                </DropdownMenuItem>
+                {oldAddress?.map((address: any) => (
+                  <DropdownMenuItem
+                    key={address.shipping_address_id}
+                    className={cn(
+                      "flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100",
+                      {
+                        "bg-zinc-100":
+                          address.shipping_address_id ===
+                          currentOldAddress?.shipping_address_id,
+                      }
+                    )}
+                    onClick={() => {
+                      setDataVn({ ...address, method: "paypal", quantity: 1 });
+                      setDataRegion({
+                        ...address,
+                        method: "paypal",
+                        quantity: 1,
+                      });
+                      setCurrentOldAddress(address);
+                      setCurrentCountry(address.country);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        address.shipping_address_id ===
+                          currentOldAddress?.shipping_address_id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                    <>
+                      {address.name}, {address.address}
+                    </>
+                  </DropdownMenuItem>
+                ))}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
+      <div className="relative flex flex-col gap-3 w-full">
+        <Label>Name</Label>
+        <Input
+          disabled={currentOldAddress}
+          value={dataVn?.name}
+          type="text"
+          onChange={(e: any) => {
+            setDataVn((prev: any) => ({
+              ...prev,
+              name: e.target.value,
+            }));
+            setDataRegion((prev: any) => ({
+              ...prev,
+              name: e.target.value,
+            }));
+          }}
+        />
+      </div>
+      <div className="relative flex flex-col gap-3 w-full">
+        <Label>Phone</Label>
+        <Input
+          disabled={currentOldAddress}
+          value={dataVn?.phone_number}
+          type="text"
+          onChange={(e: any) => {
+            setDataVn((prev: any) => ({
+              ...prev,
+              phone_number: e.target.value,
+            }));
+            setDataRegion((prev: any) => ({
+              ...prev,
+              phone_number: e.target.value,
+            }));
+          }}
+        />
+      </div>
       <div className="relative flex flex-col gap-3 w-full">
         <Label>Country</Label>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
+              disabled={currentOldAddress}
               variant="outline"
               role="combobox"
               className="w-full justify-between"
@@ -190,6 +352,7 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
+                  disabled={currentOldAddress}
                   variant="outline"
                   role="combobox"
                   className="w-full justify-between"
@@ -241,6 +404,7 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
+                  disabled={currentOldAddress}
                   variant="outline"
                   role="combobox"
                   className="w-full justify-between"
@@ -292,6 +456,7 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
           <div className="relative flex flex-col gap-3 w-full">
             <Label>Province</Label>
             <Input
+              disabled={currentOldAddress}
               type="text"
               onChange={(e: any) => {
                 setDataRegion((prev: any) => ({
@@ -305,6 +470,7 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
           <div className="relative flex flex-col gap-3 w-full">
             <Label>District</Label>
             <Input
+              disabled={currentOldAddress}
               type="text"
               onChange={(e: any) => {
                 setDataRegion((prev: any) => ({
@@ -318,11 +484,12 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
           <div className="relative flex flex-col gap-3 w-full">
             <Label>Postal code</Label>
             <Input
+              disabled={currentOldAddress}
               type="text"
               onChange={(e: any) => {
                 setDataRegion((prev: any) => ({
                   ...prev,
-                  postalCode: e.target.value,
+                  postal_code: e.target.value,
                 }));
               }}
             />
@@ -333,6 +500,8 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
       <div className="relative flex flex-col gap-3 w-full">
         <Label>Address</Label>
         <Input
+          disabled={currentOldAddress}
+          value={dataVn?.address}
           type="text"
           onChange={(e: any) => {
             setDataVn((prev: any) => ({
@@ -459,22 +628,28 @@ const CheckoutForm = ({ configId }: { configId: string }) => {
       <Button
         onClick={() =>
           currentCountry?.code === "VN"
-            ? console.log(dataVn)
-            : console.log(dataRegion)
+            ? handleCheckout(dataVn)
+            : handleCheckout(dataRegion)
         }
         disabled={
           isLoadingDistrict ||
           isLoadingShip ||
+          !dataVn.name ||
+          !dataVn.phone_number ||
           Number(dataVn?.quantity) < 1 ||
           currentCountry?.code !== "VN"
             ? !dataRegion?.province ||
               !dataRegion?.district ||
               !dataRegion?.address ||
-              !dataRegion?.postalCode
+              !dataRegion?.postal_code
             : !dataVn?.address
         }
       >
-        Checkout
+        {isLoadingCreateAddress ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          <>Checkout</>
+        )}
       </Button>
     </div>
   );
