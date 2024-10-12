@@ -29,6 +29,11 @@ const subLinks = [
 ];
 
 const Sidebar = () => {
+  const handleClick = () => {
+    const button = document.querySelector("button.absolute.right-4.top-4");
+    button instanceof HTMLButtonElement && button.click();
+  };
+
   return (
     <Sheet>
       <SheetTrigger>
@@ -43,6 +48,7 @@ const Sidebar = () => {
               {links.map(
                 (item: { label: string; link: string }, index: number) => (
                   <Link
+                    onClick={handleClick}
                     key={index}
                     href={item.link}
                     className="w-full h-12 text-black font-base hover:bg-slate-100 flex items-center pl-12"
@@ -65,6 +71,7 @@ const Sidebar = () => {
                         index: number
                       ) => (
                         <Link
+                          onClick={handleClick}
                           key={index}
                           href={item.link}
                           className="w-full h-12 text-black font-base hover:bg-slate-100 flex items-center pl-20"
