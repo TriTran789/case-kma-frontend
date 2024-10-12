@@ -7,8 +7,10 @@ import { useGetUser } from "./actions";
 import { useEffect, useState } from "react";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useCookies } from "react-cookie";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [cookies, setCookie, removeCookie] = useCookies();
   const { getUser } = useGetUser();
@@ -23,6 +25,7 @@ const Navbar = () => {
   const handleLogout = () => {
     removeCookie("access_token");
     setUser(null);
+    router.push("/");
   };
 
   useEffect(() => {
