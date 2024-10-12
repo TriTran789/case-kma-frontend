@@ -1,9 +1,10 @@
 "use client";
-
-import { useGetUser } from "@/components/actions";
-import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import {
   Sheet,
@@ -19,6 +20,12 @@ const links = [
   { label: "Dashboard", link: "/dashboard" },
   { label: "Orders", link: "/dashboard/orders" },
   { label: "Users", link: "/dashboard/users" },
+];
+
+const subLinks = [
+  { label: "Models", link: "/dashboard/models" },
+  { label: "Colors", link: "/dashboard/colors" },
+  { label: "Finishes", link: "/dashboard/finishes" },
 ];
 
 const Sidebar = () => {
@@ -44,6 +51,31 @@ const Sidebar = () => {
                   </Link>
                 )
               )}
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-1" className="border-none h-12">
+                  <AccordionTrigger className="hover:bg-slate-100 hover:no-underline">
+                    <div className="w-full text-black font-base flex items-center pl-12">
+                      Config
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {subLinks.map(
+                      (
+                        item: { label: string; link: string },
+                        index: number
+                      ) => (
+                        <Link
+                          key={index}
+                          href={item.link}
+                          className="w-full h-12 text-black font-base hover:bg-slate-100 flex items-center pl-20"
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </SheetDescription>
         </SheetHeader>
