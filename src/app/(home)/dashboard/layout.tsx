@@ -1,20 +1,12 @@
 "use client";
 
 import { useGetUser } from "@/components/actions";
+import Sidebar from "@/components/Sidebar";
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-const Dashboard = () => {
+const layout = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>();
   const [cookies, setCookie, removeCookie] = useCookies();
   const { getUser, isLoading } = useGetUser();
@@ -30,15 +22,20 @@ const Dashboard = () => {
     fetchUser();
   }, [cookies]);
 
+  if (isLoading) {
+    return <span>Loading...</span>;
+  }
+
   if (user?.role !== "admin") {
     return <span>Get out!!!!</span>;
   }
 
   return (
     <div>
-      dashboard
+      <Sidebar />
+      <div className="lg:px-32 md:px-14 px-4 sm:py-10">{children}</div>
     </div>
   );
 };
 
-export default Dashboard;
+export default layout;
