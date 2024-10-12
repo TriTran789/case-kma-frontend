@@ -23,7 +23,7 @@ const Orders = () => {
 
       <div className="mt-4 w-full sm:w-[80%] sm:mx-auto flex flex-col gap-4">
         {orders.map((item: any, index: number) => (
-          <div className="w-full rounded-lg border flex flex-col gap-4 sm:gap-0 sm:flex-row px-8 py-4 justify-between shadow">
+          <div key={index} className="w-full rounded-lg border flex flex-col gap-4 sm:gap-0 sm:flex-row px-8 py-4 justify-between shadow">
             <div className="flex flex-row gap-16">
               <Phone
                 style={{
