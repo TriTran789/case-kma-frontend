@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>();
   const [cookies, setCookie, removeCookie] = useCookies();
   const { getUser, isLoading } = useGetUser();
@@ -38,4 +38,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default layout;
+export default Layout;
