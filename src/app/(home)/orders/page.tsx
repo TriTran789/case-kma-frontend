@@ -65,6 +65,10 @@ const Orders = () => {
                   <span className="font-semibold">Total: </span>
                   {formatPrice(item?.configuration?.total_amount)}
                 </p>
+                <p className="capitalize">
+                  <span className="font-semibold">Status: </span>
+                  {item?.status}
+                </p>
               </div>
             </div>
             <div className="flex items-end max-sm:w-full">

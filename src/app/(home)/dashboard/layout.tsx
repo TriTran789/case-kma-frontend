@@ -33,7 +33,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Sidebar />
-      <div className="lg:px-32 md:px-14 px-4 sm:py-10">{children}</div>
+      <div className="lg:px-32 md:px-6 px-4 sm:py-4">{children}</div>
     </div>
   );
 };
