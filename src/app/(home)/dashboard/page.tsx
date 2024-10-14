@@ -29,7 +29,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Chart />
+      {/* <Chart /> */}
     </div>
   );
 };
