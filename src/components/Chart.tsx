@@ -88,12 +88,12 @@ const ApexChart = (props: any) => {
     <div className="flex sm:flex-row flex-col w-full bg-blue-600 gap-8">
       <div className="bg-red-600 sm:w-[60%] w-full">
         <div id="chart">
-          {/* <ReactApexChart
+          <ReactApexChart
             options={options}
             series={series}
             type="area"
             height={350}
-          /> */}
+          />
         </div>
       </div>
       <div className="bg-green-600 sm:w-[40%] w-full flex sm:flex-col justify-center">
