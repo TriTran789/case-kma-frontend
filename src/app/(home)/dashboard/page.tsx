@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetUser } from "@/components/actions";
-import Chart from "@/components/Chart";
+import DashboardData from "@/components/DashboardData";
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -29,7 +29,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Chart />
+      <DashboardData />
     </div>
   );
 };
