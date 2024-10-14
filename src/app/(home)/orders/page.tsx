@@ -59,7 +59,10 @@ const Orders = () => {
                 </p>
                 <p className="capitalize">
                   <span className="font-semibold">Price: </span>
-                  {/* {item?.configuration?.total_amount} */}
+                  {formatPrice(item?.configuration?.amount)}
+                </p>
+                <p className="capitalize">
+                  <span className="font-semibold">Total: </span>
                   {formatPrice(item?.configuration?.total_amount)}
                 </p>
               </div>
