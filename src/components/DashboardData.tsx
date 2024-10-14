@@ -27,7 +27,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 const DashboardData = (props: any) => {
   const currentDate = new Date();
@@ -230,6 +230,21 @@ const DashboardData = (props: any) => {
             </ChartContainer>
           </CardContent> 
         </Card>
+      </div>
+      {/* infor */}
+      <div className="flex sm:flex-row flex-col gap-4">
+        <div className="flex-1 border rounded-lg px-14 py-2">
+          <p className="font-bold">Total:</p>
+          <p className="">{formatPrice(data?.orders?.amount?.total)}</p>
+        </div>
+        <div className="flex-1 border rounded-lg px-14 py-2">
+          <p className="font-bold">Paid:</p>
+          <p className="">{formatPrice(data?.orders?.amount?.total)}</p>
+        </div>
+        <div className="flex-1 border rounded-lg px-14 py-2">
+          <p className="font-bold">Pending:</p>
+          <p className="">{formatPrice(data?.orders?.amount?.total)}</p>
+        </div>
       </div>
     </div>
   );
