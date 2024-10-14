@@ -82,7 +82,7 @@ const DashboardData = (props: any) => {
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-white shadow">
               <div className="max-h-40 overflow-y-auto">
                 {months.map((item, index) => (
                   <DropdownMenuItem
@@ -121,7 +121,7 @@ const DashboardData = (props: any) => {
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-white shadow">
               <div className="max-h-40 overflow-y-auto">
                 {years.map((item, index) => (
                   <DropdownMenuItem
@@ -235,15 +235,15 @@ const DashboardData = (props: any) => {
       <div className="flex sm:flex-row flex-col gap-4">
         <div className="flex-1 border rounded-lg px-14 py-2">
           <p className="font-bold">Total:</p>
-          <p className="">{formatPrice(data?.orders?.amount?.total)}</p>
+          <p className="">{formatPrice(data?.orders?.amount?.month?.total)}</p>
         </div>
         <div className="flex-1 border rounded-lg px-14 py-2">
           <p className="font-bold">Paid:</p>
-          <p className="">{formatPrice(data?.orders?.amount?.total)}</p>
+          <p className="">{formatPrice(data?.orders?.amount?.month?.paid)}</p>
         </div>
         <div className="flex-1 border rounded-lg px-14 py-2">
           <p className="font-bold">Pending:</p>
-          <p className="">{formatPrice(data?.orders?.amount?.total)}</p>
+          <p className="">{formatPrice(data?.orders?.amount?.month?.pending)}</p>
         </div>
       </div>
     </div>
