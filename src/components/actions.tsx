@@ -39,3 +39,42 @@ export const useGetUser = () => {
   return { getUser, isLoading };
 };
 
+export const useGetDashboard = () => {
+  const getDashboardRequest = async ({
+    year,
+    month,
+  }: {
+    year: number | null;
+    month: number | null;
+  }): Promise<any> => {
+    const accessToken = getCookie("access_token");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/admin/dashboard?year=${year}&month=${month}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch dashboard");
+    }
+
+    return response.json();
+  };
+
+  const {
+    isLoading,
+    mutateAsync: getDashboard,
+    error,
+  } = useMutation(getDashboardRequest);
+
+  if (error) {
+    toast.error(error.toString());
+  }
+
+  return { isLoading, getDashboard };
+};

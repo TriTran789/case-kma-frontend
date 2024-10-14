@@ -1,18 +1,10 @@
 "use client";
 
 import { useGetUser } from "@/components/actions";
+import Chart from "@/components/Chart";
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>();
@@ -34,9 +26,10 @@ const Dashboard = () => {
     return <span>Get out!!!!</span>;
   }
 
+
   return (
     <div>
-      dashboard
+      <Chart />
     </div>
   );
 };
