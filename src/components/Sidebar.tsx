@@ -37,7 +37,7 @@ const Sidebar = () => {
   return (
     <Sheet>
       <SheetTrigger>
-        <div className="bg-blue-600 p-1 flex justify-center items-center rounded-r-lg fixed top-24">
+        <div className="bg-blue-600 p-1 flex justify-center items-center rounded-r-lg fixed top-24 hover:shadow">
           <SquareMenu className="size-8 text-white" />
         </div>
       </SheetTrigger>

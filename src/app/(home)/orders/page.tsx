@@ -23,18 +23,17 @@ const Orders = () => {
 
       <div className="mt-4 w-full sm:w-[80%] sm:mx-auto flex flex-col gap-4">
         {orders.map((item: any, index: number) => (
-          <div key={index} className="w-full rounded-lg border flex flex-col gap-4 sm:gap-0 sm:flex-row px-8 py-4 justify-between shadow">
+          <div
+            key={index}
+            className="w-full rounded-lg border flex flex-col gap-4 sm:gap-0 sm:flex-row px-8 py-4 justify-between shadow"
+          >
             <div className="flex flex-row gap-16">
               <Phone
                 style={{
                   backgroundColor: item?.configuration?.color?.hex_code,
                 }}
                 className={"w-32"}
-                imgSrc={
-                  typeof window !== "undefined"
-                    ? (localStorage.getItem("croppedImage") as string)
-                    : ""
-                }
+                imgSrc={item?.configuration?.cropped_image_url}
               />
               <div className="flex flex-col gap-2">
                 <h3 className="capitalize font-bold text-lg mb-4">
