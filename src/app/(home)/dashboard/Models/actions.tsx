@@ -71,3 +71,37 @@ export const useAddModel = () => {
 
   return { isLoading, addModel };
 };
+
+export const useRemoveModel = () => {
+  const removeModelRequest = async (slug: string) => {
+    const accessToken = getCookie("access_token");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/admin/config/model/${slug}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to remove model");
+    }
+
+    return response.json();
+  };
+
+  const {
+    isLoading,
+    error,
+    mutateAsync: removeModel,
+  } = useMutation(removeModelRequest);
+
+  if (error) {
+    toast.error(error.toString());
+  }
+
+  return { isLoading, removeModel };
+};

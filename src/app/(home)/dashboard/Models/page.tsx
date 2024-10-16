@@ -3,13 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
-import { useAdminGetModels } from "./actions";
+import { useAddModel, useAdminGetModels, useRemoveModel } from "./actions";
 import { useState } from "react";
 import { convertBase64 } from "@/lib/convertBase64";
 
 const Models = () => {
   const [data, setData] = useState<any>();
   const { adminGetModels, refetchModels, isLoading } = useAdminGetModels();
+  const { addModel } = useAddModel();
+  const { removeModel } = useRemoveModel();
 
   const handleChangeImage = async (file: File) => {
     const base64 = await convertBase64(file);
@@ -17,8 +19,16 @@ const Models = () => {
   };
 
   const handleAddModel = async () => {
-    
-  }
+    await addModel(data);
+    await refetchModels();
+    const inputs = document.querySelectorAll<HTMLInputElement>("input");
+    inputs.forEach((input) => (input.value = ""));
+  };
+
+  const handleRemoveModel = async (slug: string) => {
+    await removeModel(slug);
+    await refetchModels();
+  };
 
   if (isLoading) {
     return <span>Loading...</span>;
@@ -47,7 +57,7 @@ const Models = () => {
                 onChange={(e: any) => handleChangeImage(e.target.files[0])}
               />
             </div>
-            <Button>Add</Button>
+            <Button onClick={handleAddModel}>Add</Button>
           </div>
         </div>
         <div
@@ -60,7 +70,10 @@ const Models = () => {
               className="border rounded-full flex flex-row gap-2 shadow p-1 pl-3 items-center"
             >
               <p>{item.name}</p>
-              <div className="rounded-full group hover:bg-red-600 size-8 flex items-center justify-center cursor-pointer">
+              <div
+                onClick={() => handleRemoveModel(item.slug)}
+                className="rounded-full group hover:bg-red-600 size-8 flex items-center justify-center cursor-pointer"
+              >
                 <X className="group-hover:text-white" />
               </div>
             </div>

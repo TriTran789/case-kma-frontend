@@ -25,7 +25,7 @@ const links = [
 const subLinks = [
   { label: "Models", link: "/dashboard/models" },
   { label: "Colors", link: "/dashboard/colors" },
-  { label: "Finishes", link: "/dashboard/finishes" },
+  { label: "Default", link: "/dashboard/finishes" },
 ];
 
 const Sidebar = () => {
