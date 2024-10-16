@@ -2,12 +2,13 @@ import { getCookie } from "cookies-next";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "sonner";
 
-export const useAdminGetUsers = () => {
-  const adminGetUsersRequest = async () => {
+export const useAdminGetModels = () => {
+  const adminGetModelsRequest = async () => {
     const accessToken = getCookie("access_token");
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/admin/user`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/admin/config/model`,
       {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
@@ -16,7 +17,7 @@ export const useAdminGetUsers = () => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch users admin");
+      throw new Error("Failed to get models");
     }
 
     return response.json();
@@ -25,30 +26,24 @@ export const useAdminGetUsers = () => {
   const {
     isLoading,
     error,
-    data: adminGetUsers,
-    refetch: refetchUsers,
-  } = useQuery("admingetUsers", adminGetUsersRequest);
+    data: adminGetModels,
+    refetch: refetchModels,
+  } = useQuery("adminGetModels", adminGetModelsRequest);
 
   if (error) {
     toast.error(error.toString());
   }
 
-  return { isLoading, adminGetUsers, refetchUsers };
+  return { isLoading, adminGetModels, refetchModels };
 };
 
-export const useChangeAccess = () => {
-  const changeAccessRequest = async ({
-    data,
-    userId,
-  }: {
-    data: any;
-    userId: string;
-  }) => {
+export const useAddModel = () => {
+  const addModelRequest = async (data: any) => {
     const accessToken = getCookie("access_token");
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/admin/user/${userId}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/admin/config/model`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
@@ -58,7 +53,7 @@ export const useChangeAccess = () => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to change access");
+      throw new Error("Failed to add model");
     }
 
     return response.json();
@@ -67,12 +62,12 @@ export const useChangeAccess = () => {
   const {
     isLoading,
     error,
-    mutateAsync: changeAccess,
-  } = useMutation(changeAccessRequest);
+    mutateAsync: addModel,
+  } = useMutation(addModelRequest);
 
   if (error) {
     toast.error(error.toString());
   }
 
-  return { isLoading, changeAccess };
+  return { isLoading, addModel };
 };

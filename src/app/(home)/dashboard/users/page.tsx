@@ -1,9 +1,15 @@
 "use client";
 import { Button } from "@headlessui/react";
-import { useAdminGetUsers } from "./actions";
+import { useAdminGetUsers, useChangeAccess } from "./actions";
 
 const Users = () => {
-  const { isLoading, adminGetUsers } = useAdminGetUsers();
+  const { isLoading, adminGetUsers, refetchUsers } = useAdminGetUsers();
+  const { changeAccess } = useChangeAccess();
+
+  const handleAccess = async (isLock: boolean, userId: string) => {
+    await changeAccess({ data: { is_lock: !isLock }, userId });
+    await refetchUsers();
+  };
 
   if (isLoading) {
     return <span>Loading...</span>;
@@ -26,11 +32,12 @@ const Users = () => {
               </p>
             </div>
             <Button
+              onClick={() => handleAccess(item.is_lock, item.user_id)}
               className={`${
                 item.is_lock
                   ? "bg-blue-600 hover:bg-blue-400"
                   : "bg-red-600 hover:bg-red-400"
-              } rounded-lg font-semibold text-white px-4 py-2 max-sm:w-full`}
+              } rounded-lg font-semibold text-white px-4 py-2 max-sm:w-full w-20`}
             >
               {item?.is_lock ? "Allow" : "Ban"}
             </Button>
