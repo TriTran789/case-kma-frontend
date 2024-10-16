@@ -61,7 +61,7 @@ const Colors = () => {
           className="flex flex-row gap-8 flex-wrap border-t mt-4 pt-4"
         >
           {adminGetColors?.map((item: any, index: number) => (
-            <div className="border rounded-full flex flex-row gap-2 shadow p-1 items-center">
+            <div key={index} className="border rounded-full flex flex-row gap-2 shadow p-1 items-center">
               <div
                 className="w-8 h-8 rounded-full border shadow"
                 style={{ backgroundColor: item.hex_code }}
