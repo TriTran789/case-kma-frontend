@@ -35,7 +35,7 @@ const Orders = () => {
             key={index}
             className="w-full rounded-lg border flex flex-col gap-4 sm:gap-0 sm:flex-row px-8 py-4 justify-between shadow"
           >
-            <div className="flex flex-row gap-16">
+            <div className="flex lg:flex-row flex-col lg:gap-16 gap-2">
               <Phone
                 style={{
                   backgroundColor: item?.configuration?.color?.hex_code,
@@ -44,43 +44,50 @@ const Orders = () => {
                 imgSrc={item?.configuration?.cropped_image_url}
               />
               <div className="flex flex-col gap-2">
-                <h3 className="capitalize font-bold text-lg mb-4">
+                <h3 className="capitalize font-bold text-lg">
                   {item?.configuration?.model?.name}
                 </h3>
                 <p className="capitalize">
                   <span className="font-semibold">Material: </span>
                   {item?.configuration?.material}
                 </p>
-                <div className="flex flex-row items-center gap-3">
-                  <span className="font-semibold">Color: </span>
-                  <div
-                    className="h-6 w-6 rounded-full ring-1 ring-black"
-                    style={{
-                      backgroundColor: item?.configuration?.color?.hex_code,
-                    }}
-                  />
+                <div className="flex flex-row">
+                  <div className="flex flex-row items-center gap-3 w-32">
+                    <span className="font-semibold">Color: </span>
+                    <div
+                      className="h-6 w-6 rounded-full ring-1 ring-black"
+                      style={{
+                        backgroundColor: item?.configuration?.color?.hex_code,
+                      }}
+                    />
+                  </div>
+                  <p className="capitalize">
+                    <span className="font-semibold">Finish: </span>
+                    {item?.configuration?.finish}
+                  </p>
+                </div>
+                <div className="flex flex-row">
+                  <p className="capitalize w-32">
+                    <span className="font-semibold">Price: </span>
+                    {formatPrice(item?.configuration?.amount)}
+                  </p>
+                  <p className="capitalize">
+                    <span className="font-semibold">Total: </span>
+                    {formatPrice(item?.configuration?.total_amount)}
+                  </p>
                 </div>
                 <p className="capitalize">
-                  <span className="font-semibold">Finish: </span>
-                  {item?.configuration?.finish}
+                  <span className="font-semibold">Name: </span>
+                  {item?.shipping_address?.name}
                 </p>
-                <p className="capitalize">
-                  <span className="font-semibold">Price: </span>
-                  {formatPrice(item?.configuration?.amount)}
+                <p className="capitalize line-clamp-1">
+                  <span className="font-semibold">Address: </span>
+                  {item?.shipping_address?.full_address}
                 </p>
-                <p className="capitalize">
-                  <span className="font-semibold">Total: </span>
-                  {formatPrice(item?.configuration?.total_amount)}
-                </p>
-                {/* <p className="capitalize">
-                  <span className="font-semibold">Status: </span>
-                  {item?.status}
-                </p> */}
               </div>
             </div>
             <div className="flex items-end max-sm:w-full">
               <div className="flex flex-row gap-2 items-center">
-                <p className="font-semibold">Status:</p>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
