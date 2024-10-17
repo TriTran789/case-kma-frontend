@@ -59,15 +59,14 @@ const Orders = () => {
                   </p>
                 </div>
                 <div className="flex flex-row">
-
-                <p className="capitalize w-32">
-                  <span className="font-semibold">Price: </span>
-                  {formatPrice(item?.configuration?.amount)}
-                </p>
-                <p className="capitalize">
-                  <span className="font-semibold">Total: </span>
-                  {formatPrice(item?.configuration?.total_amount)}
-                </p>
+                  <p className="capitalize w-32">
+                    <span className="font-semibold">Price: </span>
+                    {formatPrice(item?.configuration?.amount)}
+                  </p>
+                  <p className="capitalize">
+                    <span className="font-semibold">Total: </span>
+                    {formatPrice(item?.configuration?.total_amount)}
+                  </p>
                 </div>
                 <p className="capitalize">
                   <span className="font-semibold">Status: </span>
@@ -84,11 +83,17 @@ const Orders = () => {
               </div>
             </div>
             <div className="flex items-end max-sm:w-full">
-              <Link
-                href={`/checkout?configuration_id=${item?.configuration?.configuration_id}`}
-              >
-                <Button className="max-sm:w-full">Buy Again</Button>
-              </Link>
+              {item?.link ? (
+                <a href={item?.link}>
+                  <Button className="max-sm:w-full">Checkout</Button>
+                </a>
+              ) : (
+                <Link
+                  href={`/checkout?configuration_id=${item?.configuration?.configuration_id}`}
+                >
+                  <Button className="max-sm:w-full">Buy Again</Button>
+                </Link>
+              )}
             </div>
           </div>
         ))}
