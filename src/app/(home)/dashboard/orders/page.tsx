@@ -29,7 +29,7 @@ const Orders = () => {
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="mt-4 w-full sm:w-[80%] sm:mx-auto flex flex-col gap-4">
+      <div className="mt-4 w-full sm:mx-auto flex flex-col gap-4">
         {orders.data.map((item: any, index: number) => (
           <div
             key={index}
