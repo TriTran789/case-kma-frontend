@@ -206,7 +206,7 @@ const DesignConfigurator = () => {
                 >
                   <Label>Color: {options?.color?.name}</Label>
                   <div className="mt-3 flex items-center space-x-3">
-                    {configurationData?.colors.map((color) => (
+                    {configurationData?.colors.map((color, index) => (
                       <RadioGroup.Option
                         key={color.name}
                         value={color}
@@ -223,6 +223,7 @@ const DesignConfigurator = () => {
                           className={`h-8 w-8 rounded-full border border-black border-opacity-10`}
                           style={{ backgroundColor: color.hex_code }}
                         />
+                        {index === 0 && <span className="absolute top-full bg-rose-600 text-white px-1 rounded-lg text-xs -translate-y-1/3 animate-bounce">Hot!</span>}
                       </RadioGroup.Option>
                     ))}
                   </div>
